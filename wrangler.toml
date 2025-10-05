@@ -1,4 +1,7 @@
 name = "asteroid-worker"
-type = "javascript"
 account_id = "<your-cloudflare-account-id>"
 workers_dev = true
+compatibility_date = "2025-10-05"
+
+# Path to your Worker script
+main = "index.js"
