@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asteroid Near Passes</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+    <script type="importmap">
+			{
+				"imports": {
+					"three": "https://cdn.jsdelivr.net/npm/three@0.178/build/three.module.js",
+          "jsm/": "https://cdn.jsdelivr.net/npm/three@0.178/examples/jsm/"
+
+        }
+			}
+		</script>
+  </head>
+  <body>
+    <script type="module" src="index.js"></script>
+    
+    <div id="asteroid-popup" style="
+    position: absolute;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: none;
+    pointer-events: none;
+    font-family: sans-serif;
+    font-size: 14px;
+">
+</div>
+<div id="filters" style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.5); padding:10px; color:white; z-index:10;">
+  <label>Start Date: <input type="date" id="startDate" value="2025-09-04"></label><br>
+  <label>End Date: <input type="date" id="endDate" value="2025-10-04"></label><br>
+  <label>Min Diameter (m): <input type="number" id="minDiameter" value="0"></label><br>
+  <label>Max Diameter (m): <input type="number" id="maxDiameter" value="1000"></label><br>
+  <label>Max Speed (km/s): <input type="number" id="maxSpeed" value="50"></label><br>
+  <label>Max Distance (LD): <input type="number" id="maxDistance" value="10"></label><br>
+  <button id="applyFilters">Apply Filters</button>
+</div>
+  </body>
+</html>
