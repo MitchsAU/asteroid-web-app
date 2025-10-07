@@ -2,7 +2,7 @@ name = "asteroid-worker"
 type = "javascript"
 account_id = "6069b6dfb9ce2aadb0f56c32abc94794"
 workers_dev = true
-compatibility_date = "2025-10-08"
+compatibility_date = "2025-10-07"
 
 # Path to your Worker script
 main = "index.js"
