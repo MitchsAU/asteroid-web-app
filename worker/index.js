@@ -8,8 +8,6 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import fetch from "node-fetch";
-
 addEventListener("fetch", event => {
   event.respondWith(handleRequest(event.request));
 });
@@ -21,12 +19,15 @@ async function handleRequest(req) {
     const startDate = url.searchParams.get("startDate") || "2025-09-04";
     const endDate = url.searchParams.get("endDate") || "2025-10-04";
 
-    const nasaUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDate}&date-max=${endDate}&diameter=true&fullname=true&limit=1000`;
+    const nasaUrl = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${startDate}&date-max=${endDate}&diameter=true&fullname=true&dist-max=70LD&limit=1000`;
     const response = await fetch(nasaUrl);
     const data = await response.json();
 
     return new Response(JSON.stringify(data), {
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      }
     });
   }
 

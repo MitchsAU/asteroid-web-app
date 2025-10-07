@@ -124,7 +124,7 @@ function fetchAsteroids() {
   lastEndDate = endDate;
 
   // const url = `http://localhost:3000/api/asteroids?ts=${Date.now()}&startDate=${startDate}&endDate=${endDate}`;
-  const url = `http://asteroid-worker.skeltonmitchell41.workers.dev//api/asteroids?ts=${Date.now()}&startDate=${startDate}&endDate=${endDate}`;
+  const url = `https://asteroid-worker.skeltonmitchell41.workers.dev//api/asteroids?ts=${Date.now()}&startDate=${startDate}&endDate=${endDate}`;
 
   fetch(url)
     .then(res => res.json())

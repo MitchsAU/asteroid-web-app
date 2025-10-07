@@ -1,17 +1,17 @@
 {
-  "name": "earth",
+  "name": "asteroid-worker",
   "version": "1.0.0",
-  "description": "",
+  "description": "Cloudflare Worker proxy for NASA NEO API",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-  "start": "node server.js",
-  "dev": "nodemon server.js"
-},
+    "dev": "wrangler dev",
+    "publish": "wrangler publish"
+  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^5.1.0",
-    "node-fetch": "^3.3.2"
+  "author": "Mitchell Skelton",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^4.42.0"
   }
 }
