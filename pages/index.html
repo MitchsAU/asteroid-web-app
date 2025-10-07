@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <title>Asteroid Near Passes</title>
     <style>
       body {
@@ -34,14 +37,102 @@
     font-size: 14px;
 ">
 </div>
-<div id="filters" style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.5); padding:10px; color:white; z-index:10;">
-  <label>Start Date: <input type="date" id="startDate" value="2025-09-04"></label><br>
-  <label>End Date: <input type="date" id="endDate" value="2025-10-04"></label><br>
-  <label>Min Diameter (m): <input type="number" id="minDiameter" value="0"></label><br>
-  <label>Max Diameter (m): <input type="number" id="maxDiameter" value="1000"></label><br>
-  <label>Max Speed (km/s): <input type="number" id="maxSpeed" value="50"></label><br>
-  <label>Max Distance (LD): <input type="number" id="maxDistance" value="10"></label><br>
-  <button id="applyFilters">Apply Filters</button>
-</div>
+  <div id="filter-panel" class="d-flex flex-column shadow-lg vh-100 overflow-auto">
+
+    <div id="filter-content" class="flex-grow-1">
+      <h4 class="fs-1 text-center mb-4 fw-semibold">
+        <i class="me-2"></i>Asteroid NEOs
+      </h4>
+        <hr class="primary-secondary">
+      <!-- Dates -->
+      <div class="filter-group mb-4">
+        <label class="form-label fw-semibold d-block w-100 mb-2">
+          <i class="bi bi-calendar me-2 icon-purple"></i>Date Range
+        </label>
+
+        <label class="form-label fw-semibold d-block mb-1">
+          <i class="me-2 text-success"></i>Start Date
+        </label>
+        <input type="date" id="startDate" value="2025-09-04" class="form-control bg-dark text-light border-secondary mb-2">
+
+        <label class="form-label fw-semibold d-block mb-1">
+          <i class="me-2 text-success"></i>End Date
+        </label>
+        <input type="date" id="endDate" value="2025-10-04" class="form-control bg-dark text-light border-secondary mb-3">
+
+        <button id="applyDates" class="btn btn-apply w-100">
+          <i class="bi bi-check2-circle me-1"></i>Apply Dates
+        </button>
+      </div>
+      <hr class="border-secondary">
+
+      <!-- Diameter -->
+      <div class="filter-group mb-4">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-rulers me-2 icon-purple"></i>Diameter (m)
+        </label>
+
+        <div class="slider-container mb-2">
+          <input type="range" id="minDiameterSlider" class="min-slider" min="0" max="1000" value="0" step="10" class="form-range">
+          <input type="range" id="maxDiameterSlider" class="max-slider" min="0" max="1000" value="1000" step="10" class="form-range">
+        </div>
+
+        <div class="number-inputs d-flex gap-2">
+          <input type="number" id="minDiameter" value="0" min="0" max="1000" class="form-control bg-dark text-light border-secondary">
+          <input type="number" id="maxDiameter" value="1000" min="0" max="1000" class="form-control bg-dark text-light border-secondary">
+        </div>
+      </div>
+
+      <!-- Speed -->
+      <div class="filter-group mb-4">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-speedometer2 me-2 icon-purple"></i>Speed (km/s)
+        </label>
+
+        <div class="slider-container mb-2">
+          <input type="range" id="minSpeedSlider" class="min-slider" min="0" max="50" value="0" step="0.5" class="form-range">
+          <input type="range" id="maxSpeedSlider" class="max-slider" min="0" max="50" value="50" step="0.5" class="form-range">
+        </div>
+
+        <div class="number-inputs d-flex gap-2">
+          <input type="number" id="minSpeed" value="0" min="0" max="50" class="form-control bg-dark text-light border-secondary">
+          <input type="number" id="maxSpeed" value="50" min="0" max="50" class="form-control bg-dark text-light border-secondary">
+        </div>
+      </div>
+
+      <!-- Distance -->
+      <div class="filter-group mb-4">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-globe-americas me-2 icon-purple"></i>Distance (LD)
+        </label>
+
+        <div class="slider-container mb-2">
+          <input type="range" id="minDistanceSlider" class="min-slider" min="0" max="70" value="0" step="1" class="form-range">
+          <input type="range" id="maxDistanceSlider" class="max-slider" min="0" max="70" value="70" step="1" class="form-range">
+        </div>
+
+        <div class="number-inputs d-flex gap-2">
+          <input type="number" id="minDistance" value="0" min="0" max="70" class="form-control bg-dark text-light border-secondary">
+          <input type="number" id="maxDistance" value="70" min="0" max="70" class="form-control bg-dark text-light border-secondary">
+        </div>
+      </div>
+
+      <button id="resetFilters" class="btn btn-outline-light w-100 mt-3">
+        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Filters
+      </button>
+
+      <!-- Filter panel footer -->
+      <div class="filter-footer d-flex justify-content-between align-items-end px-2 mt-4 text-secondary small">
+        <div id="ldToKm">1 LD = 384,400 km</div>
+        <div class="developer-credit text-end"><i class="bi bi-c-circle me-2"></i>Mitchell Skelton</div>
+      </div>
+    </div>
+  </div>
+      <div id="filter-tab" class="d-flex align-items-center justify-content-center">
+      ❮
+    </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

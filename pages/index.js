@@ -100,11 +100,21 @@ let lastStartDate = "";
 let lastEndDate = "";
 
 // --- Fetch asteroid data from API ---
+// --- Fetch asteroid data from API ---
+function clearAsteroids() {
+  asteroids.forEach(a => {
+    scene.remove(a.mesh);
+    scene.remove(a.trail);
+  });
+  asteroids.length = 0;
+}
+
+// --- Fetch asteroid data from API ---
 function fetchAsteroids() {
   const startDate = document.getElementById("startDate").value;
   const endDate = document.getElementById("endDate").value;
 
-  // Only fetch if date changed
+  // Only fetch if date actually changed
   if (startDate === lastStartDate && endDate === lastEndDate) {
     applyFilters();
     return;
@@ -114,7 +124,7 @@ function fetchAsteroids() {
   lastEndDate = endDate;
 
   // const url = `http://localhost:3000/api/asteroids?ts=${Date.now()}&startDate=${startDate}&endDate=${endDate}`;
-  const url = `https://asteroid-worker.skeltonmitchell41.workers.dev/api/asteroids?ts=${Date.now()}&startDate=${startDate}&endDate=${endDate}`;
+  const url = `http://asteroid-worker.skeltonmitchell41.workers.dev//api/asteroids?ts=${Date.now()}&startDate=${startDate}&endDate=${endDate}`;
 
   fetch(url)
     .then(res => res.json())
@@ -129,25 +139,18 @@ function fetchAsteroids() {
       allAsteroids = fillMissingDiameters(asteroidArray);
       clearAsteroids();
       createAsteroids(allAsteroids, true); // create meshes
-      applyFilters(); // apply other filters immediately
+      applyFilters(); // immediately apply other filters
     })
     .catch(err => console.error("❌ Error fetching asteroid data:", err));
 }
 
-// --- Clear existing asteroids ---
-function clearAsteroids() {
-  asteroids.forEach(a => {
-    scene.remove(a.mesh);
-    scene.remove(a.trail);
-  });
-  asteroids.length = 0;
-}
-
-// --- Apply live filters ---
+// --- Apply live filters (size, speed, distance) ---
 function applyFilters() {
   const minDiameter = parseFloat(document.getElementById("minDiameter").value) || 0;
   const maxDiameter = parseFloat(document.getElementById("maxDiameter").value) || Infinity;
+  const minSpeed = parseFloat(document.getElementById("minSpeed").value) || 0;
   const maxSpeed = parseFloat(document.getElementById("maxSpeed").value) || Infinity;
+  const minDistance = parseFloat(document.getElementById("minDistance").value) || 0;
   const maxDistance = parseFloat(document.getElementById("maxDistance").value) || Infinity;
 
   asteroids.forEach(a => {
@@ -158,7 +161,9 @@ function applyFilters() {
     const show =
       d >= minDiameter &&
       d <= maxDiameter &&
+      v >= minSpeed &&
       v <= maxSpeed &&
+      dist >= minDistance &&
       dist <= maxDistance;
 
     a.mesh.visible = show;
@@ -178,7 +183,7 @@ function createAsteroids(asteroidData, storeMeshes = false) {
     const distLD = distAU * auToLd;
     const diameterM = parseFloat(data.diameter);
     const velocity = parseFloat(data.v_rel) || 0.0001;
-    const name = data.fullname || "Unnamed";
+    const name = (data.fullname || "Unnamed").replace(/[()]/g, "").trim(); // Remove brackets from names, as if i use "des" on older asteroids names can be different and not consistant
     const closeapproachDate = data.cd || "Unknown";
 
     const angle = Math.random() * Math.PI * 2;
@@ -216,17 +221,21 @@ function createAsteroids(asteroidData, storeMeshes = false) {
   });
 }
 
-// --- Event listeners for live filter updates ---
+// --- Event listeners ---
+document.getElementById("applyDates").addEventListener("click", () => {
+  fetchAsteroids(); // Fetch only when Apply button is clicked
+});
+
+// Live filter updates for everything else
 document.querySelectorAll("#filters input").forEach(input => {
-  input.addEventListener("input", () => {
-    fetchAsteroids(); // fetch new data only if date changed
-    applyFilters();   // apply diameter/speed/distance immediately
-  });
+  const id = input.id;
+  if (id !== "startDate" && id !== "endDate") {
+    input.addEventListener("input", applyFilters);
+  }
 });
 
 // --- Initial load ---
 fetchAsteroids();
-
 
 // --- Popup ---
 const popup = document.getElementById("asteroid-popup");
@@ -237,7 +246,6 @@ function onMouseClick(event) {
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
 
-  // Only include visible asteroids
   const asteroidMeshes = asteroids.filter(a => a.mesh.visible).map(a => a.mesh);
   const intersects = raycaster.intersectObjects(asteroidMeshes, true);
 
@@ -265,6 +273,121 @@ function onMouseClick(event) {
   }
 }
 window.addEventListener("click", onMouseClick, false);
+
+function setupFilterUI() {
+  const panel = document.getElementById("filter-panel");
+  const tab = document.getElementById("filter-tab");
+
+  tab.addEventListener("click", () => {
+    panel.classList.toggle("collapsed");
+
+    // Update tab icon
+    tab.textContent = panel.classList.contains("collapsed") ? "❮" : "❯";
+  });
+}
+window.addEventListener("DOMContentLoaded", setupFilterUI);
+
+function bindRangePair(minSlider, maxSlider, minInput, maxInput, callback) {
+  const minGap = 1; // minimum distance between sliders
+
+  const syncFromSliders = () => {
+    let minVal = parseFloat(minSlider.value);
+    let maxVal = parseFloat(maxSlider.value);
+
+    // Prevent crossing
+    if (maxVal - minVal <= minGap) {
+      if (event.target === minSlider) {
+        minVal = maxVal - minGap;
+        minSlider.value = minVal;
+      } else {
+        maxVal = minVal + minGap;
+        maxSlider.value = maxVal;
+      }
+    }
+
+    // Sync inputs
+    minInput.value = minVal;
+    maxInput.value = maxVal;
+
+    callback();
+  };
+
+  const syncFromInputs = () => {
+    let minVal = parseFloat(minInput.value);
+    let maxVal = parseFloat(maxInput.value);
+
+    // Clamp to min/max and prevent overlap
+    if (maxVal - minVal <= minGap) {
+      if (event.target === minInput) {
+        minVal = maxVal - minGap;
+        minInput.value = minVal;
+      } else {
+        maxVal = minVal + minGap;
+        maxInput.value = maxVal;
+      }
+    }
+
+    // Keep values within slider range
+    minVal = Math.max(parseFloat(minSlider.min), Math.min(minVal, parseFloat(minSlider.max)));
+    maxVal = Math.max(parseFloat(maxSlider.min), Math.min(maxVal, parseFloat(maxSlider.max)));
+
+    // Sync sliders
+    minSlider.value = minVal;
+    maxSlider.value = maxVal;
+
+    callback();
+  };
+
+  // Bind events
+  minSlider.addEventListener("input", syncFromSliders);
+  maxSlider.addEventListener("input", syncFromSliders);
+  minInput.addEventListener("input", syncFromInputs);
+  maxInput.addEventListener("input", syncFromInputs);
+}
+
+bindRangePair(
+  document.getElementById("minDiameterSlider"),
+  document.getElementById("maxDiameterSlider"),
+  document.getElementById("minDiameter"),
+  document.getElementById("maxDiameter"),
+  applyFilters
+);
+
+bindRangePair(
+  document.getElementById("minSpeedSlider"),
+  document.getElementById("maxSpeedSlider"),
+  document.getElementById("minSpeed"),
+  document.getElementById("maxSpeed"),
+  applyFilters
+);
+
+bindRangePair(
+  document.getElementById("minDistanceSlider"),
+  document.getElementById("maxDistanceSlider"),
+  document.getElementById("minDistance"),
+  document.getElementById("maxDistance"),
+  applyFilters
+);
+
+document.getElementById("resetFilters").addEventListener("click", () => {
+  const resetValues = {
+    minDiameter: 0,
+    maxDiameter: 1000,
+    minSpeed: 0,
+    maxSpeed: 50,
+    minDistance: 0,
+    maxDistance: 70,
+  };
+
+  Object.entries(resetValues).forEach(([id, val]) => {
+    document.getElementById(id).value = val;
+    const slider = document.getElementById(id + "Slider");
+    if (slider) slider.value = val;
+  });
+
+  applyFilters();
+});
+
 
 // --- Animate ---
 function animate() {
