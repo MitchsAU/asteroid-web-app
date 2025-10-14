@@ -25,3 +25,31 @@ app.get("/api/asteroids", async (req, res) => {
 });
 
 app.listen(3000, () => console.log("✅ Proxy running on port 3000"));
+
+
+
+app.get("/api2/asteroids", async (req, res) => {
+  try {
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+
+    const pad = (n) => n.toString().padStart(2, "0");
+
+    const todayStr = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+    const tomorrowStr = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}`;
+
+    const url = `https://ssd-api.jpl.nasa.gov/cad.api?date-min=${todayStr}&date-max=${tomorrowStr}&diameter=true&fullname=true&dist-max=70LD&limit=1000`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch data from NASA" });
+  }
+});
+
+app.listen(3000, () => console.log("✅ Proxy running on port 3000"));

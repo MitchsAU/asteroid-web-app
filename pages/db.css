@@ -1,0 +1,113 @@
+/* DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD */
+/* DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD */
+/* DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD DASHBOARD */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url(./textures/bg/stargalaxy.jpg) no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  /* backdrop-filter: blur(0.5px); */
+  z-index: 0;
+}
+
+.container {
+  position: relative; /* above the overlay */
+  z-index: 1;
+  max-width: 1200px;
+  width: 100%;
+  padding: 2rem;
+}
+
+
+/* Glass effect container */
+.glass-box,
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Pulsing live dot */
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Explore button gradient */
+.btn-gradient {
+  background: linear-gradient(to right, #7e22ce, #2563eb);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+  color: white;
+}
+.btn-gradient:hover {
+  background: linear-gradient(to right, #9333ea, #3b82f6);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(147, 51, 234, 0.5);
+}
+
+/* Recent cards */
+.recent-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  /* position: relative; */
+  /* display: flex !important; */
+  /* align-items: center !important; */
+  /* justify-content: space-between !important; */
+  /* gap: 0.75rem; */
+}
+
+.recent-card .dot {
+  /* margin-top: 0 !important; */
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fb923c;
+  flex-shrink: 0;
+}
+
+/* target the first .d-flex inside the card (your left group) */
+.recent-card > .d-flex:first-child {
+  align-items: center !important;
+}
+
+/* ensure right block still stacks */
+.recent-card > .text-end,
+.recent-card > .d-flex + .text-end {
+  /* display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.125rem; */
+}
+
+.icon-purple{
+    color: #7f26d3;
+}

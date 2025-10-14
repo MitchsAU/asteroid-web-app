@@ -1,5 +1,5 @@
 * {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   box-sizing: border-box;
 }
 :root{
@@ -141,6 +141,14 @@
   color: var(--primary-color);
 }
 
+.bg-purple{
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+.bg-purple:hover{
+  background-color: #661daa !important;
+}
+
 #ldToKm {
   font-weight: 500;
   opacity: 0.8;
@@ -149,3 +157,235 @@
 .developer-credit {
   opacity: 0.8;
 }
+
+/* === LOADER BASE === */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+  pointer-events: all;
+}
+.loader-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.loader-center {
+  text-align: center;
+  color: white;
+}
+
+/* === ASTEROID === */
+.asteroid-wrapper {
+  position: relative;
+  width: 8rem;
+  height: 8rem;
+  margin: 0 auto 2rem;
+
+  /* center the content perfectly */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.asteroid {
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(135deg, #f97316, #ef4444, #ea580c);
+  border-radius: 50%;
+  position: relative; /* change from absolute */
+  transform: rotate(0deg);
+  animation: spin 1.5s linear infinite;
+  box-shadow: 0 0 20px rgba(255, 80, 0, 0.7);
+}
+
+.asteroid::before,
+.asteroid::after {
+  content: '';
+  position: absolute;
+  background: rgba(80, 20, 0, 0.5);
+  border-radius: 50%;
+}
+
+.asteroid::before {
+  width: 0.5rem;
+  height: 0.5rem;
+  top: 0.5rem; /* adjust */
+  left: 0.8rem; /* adjust */
+}
+
+.asteroid::after {
+  width: 0.4rem;
+  height: 0.4rem;
+  bottom: 0.5rem; /* adjust */
+  right: 0.7rem; /* adjust */
+}
+
+/* === ORBITS === */
+.orbit {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: spin linear infinite;
+}
+.orbit-1 { animation-duration: 3s; }
+.orbit-2 { animation-duration: 4s; animation-direction: reverse; }
+.orbit-3 { animation-duration: 5s; }
+.orbit-4 { animation-duration: 6s; animation-direction: reverse; }
+
+.particle {
+  position: absolute;
+  width: 0.4rem;
+  height: 0.4rem;
+  background: white;
+  border-radius: 50%;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.particle-1{
+  background: #ffffff;
+}
+.particle-2{
+  background: #90cdf4;
+}
+.particle-3{
+  background: #d8b4fe;
+}
+.particle-4{
+  background: #faf089;
+}
+
+/* === TEXT === */
+.loader-title {
+  font-size: 1.5rem;
+  background: linear-gradient(to right, #fff, #d8b4fe, #bfdbfe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.loader-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+/* === DOTS === */
+.dots span {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 0 0.15rem;
+  background: white;
+  border-radius: 50%;
+  animation: bounce 1s infinite;
+}
+.dots span:nth-child(2) { animation-delay: 0.1s; }
+.dots span:nth-child(3) { animation-delay: 0.2s; }
+
+/* === KEYFRAMES === */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+
+/* Asteroid Label */
+.asteroid-label {
+  bottom: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 50;
+}
+
+/* Popup Backdrop */
+.popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 60;
+  pointer-events: none;
+}
+
+/* Popup */
+.popup {
+  z-index: 70;
+  animation: zoomIn 0.2s ease-in-out;
+  pointer-events: auto;
+}
+
+/* Zoom-in animation */
+@keyframes zoomIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+#backToDashboard, #resetFilters {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  transition: all 0.2s ease;
+}
+
+#backToDashboard:hover, #resetFilters:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* ==== SCROLLBAR STYLING ==== */
+#filter-panel::-webkit-scrollbar {
+  width: 10px;
+}
+
+#filter-panel::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0);
+  border-radius: 10px;
+}
+
+#filter-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+#filter-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-content {
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.instruction-page {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+}
+
+.instruction-page.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.instruction-page.d-none {
+  display: none !important;
+}
+
