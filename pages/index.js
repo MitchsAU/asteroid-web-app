@@ -737,5 +737,5 @@ function handleWindowResize() {
 window.addEventListener("resize", handleWindowResize, false);
 
 document.getElementById("backToDashboard").addEventListener("click", () => {
-    window.location.href = "dashboard.html"; 
+    window.location.href = "index.html"; 
   });

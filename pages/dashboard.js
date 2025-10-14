@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const exploreBtn = document.getElementById("exploreBtn");
 
   exploreBtn.addEventListener("click", () => {
-    window.location.href = "index.html"; // change if needed
+    window.location.href = "asteroidApp.html";
   });
 
   function estimateDiameter(h, albedo = 0.14) {
