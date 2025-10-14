@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const endDate = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth() + 1)}-${pad(tomorrow.getDate())}`;
 
   // const url = `http://localhost:3000/api2/asteroids?date-min=${startDate}&date-max=${endDate}`;
-  const url = `http://asteroid-worker.skeltonmitchell41.workers.dev/api2/asteroids?date-min=${startDate}&date-max=${endDate}`;
+  const url = `https://asteroid-worker.skeltonmitchell41.workers.dev/api2/asteroids?date-min=${startDate}&date-max=${endDate}`;
  
 
   try {
