@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return (1329 / Math.sqrt(albedo)) * Math.pow(10, -0.2 * h);
   }
 
-  // Get today and tomorrow
+  // Get today and tomorrows date
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
@@ -45,14 +45,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const diameterIdx = fields.indexOf("diameter");
     const hIdx = fields.indexOf("h");
     const dateIdx = fields.indexOf("cd");
-    const speedIdx = fields.indexOf("v_rel"); // relative velocity
+    const speedIdx = fields.indexOf("v_rel");
 
     const approaches = data.data.map(item => {
       let name = item[fullnameIdx] || item[desIdx] || "Unknown";
-      name = name.replace(/[()]/g, "").trim(); // remove brackets
+      name = name.replace(/[()]/g, "").trim();
 
       const distanceAU = parseFloat(item[distIdx]);
-      const distanceLD = distanceAU / 0.00257; // AU → LD
+      const distanceLD = distanceAU / 0.00257; // AU to LD
       const h = parseFloat(item[hIdx]);
       const speed = parseFloat(item[speedIdx]); // km/s
       let diameter = item[diameterIdx] ? parseFloat(item[diameterIdx]) : null;

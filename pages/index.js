@@ -74,21 +74,20 @@ const moonGeo = new THREE.SphereGeometry(0.27, 64, 64);
 const moonMat = new THREE.MeshStandardMaterial({ map: moonTexture });
 const moon = new THREE.Mesh(moonGeo, moonMat);
 
-// Position Moon 1 LD (scaled) away from Earth
+// Position Moon 1 LD away from Earth
 moon.position.set(2, 0, 0);
 scene.add(moon);
 
-// --- Moon Orbit Path ---
-const moonOrbitRadius = 2; // scaled 1 LD
-const inclination = THREE.MathUtils.degToRad(5.145); // Moon's orbital inclination
+// Moon Orbit Path
+const moonOrbitRadius = 2;
+const inclination = THREE.MathUtils.degToRad(5.145); // Moon's orbit angle
 
-// Create a circle in the XZ-plane first
 const orbitCurve = new THREE.EllipseCurve(
-  0, 0,            // center
-  moonOrbitRadius, moonOrbitRadius, // radii
-  0, 2 * Math.PI,  // start/end angles
-  false,           // clockwise
-  0                // rotation
+  0, 0,            
+  moonOrbitRadius, moonOrbitRadius,
+  0, 2 * Math.PI, 
+  false,           
+  0                
 );
 
 const orbitPoints = orbitCurve.getPoints(100);
@@ -96,12 +95,12 @@ const orbitGeometry = new THREE.BufferGeometry().setFromPoints(orbitPoints.map(p
 const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x888888 });
 const moonOrbitLine = new THREE.LineLoop(orbitGeometry, orbitMaterial);
 
-// Rotate the orbit line to match the Moon's inclination
+// Rotate the orbit line to match the Moon's angle
 moonOrbitLine.rotation.x = inclination;
 
 scene.add(moonOrbitLine);
 
-// --- Create comet-like trail ---
+// ASteroid Trail for direction
 function createTrail(startPos, direction, length = 20, color = 0xffaa44) {
   const positions = new Float32Array(length * 3);
   for (let i = 0; i < length; i++) {
@@ -120,12 +119,12 @@ function createTrail(startPos, direction, length = 20, color = 0xffaa44) {
   return new THREE.Line(geometry, material);
 }
 
-// --- Estimate diameter from absolute magnitude h ---
+// Estimate diameter from absolute magnitude h
 function estimateDiameter(h, albedo = 0.14) {
   return (1329 / Math.sqrt(albedo)) * Math.pow(10, -0.2 * h);
 }
 
-// --- Fill missing diameters and convert to meters ---
+// Fill missing diameters and convert to meters
 function fillMissingDiameters(asteroidData) {
   return asteroidData.map(item => {
     const diameterKm = item.diameter ? parseFloat(item.diameter) : estimateDiameter(Number(item.h));
@@ -134,13 +133,13 @@ function fillMissingDiameters(asteroidData) {
   });
 }
 
-let allAsteroids = []; // All fetched from API
-const asteroids = [];  // Meshes in scene
+let allAsteroids = [];
+const asteroids = [];
 
 let lastStartDate = "";
 let lastEndDate = "";
 
-// --- Fetch asteroid data from API ---
+// Clear asteroids from scene
 function clearAsteroids() {
   asteroids.forEach(a => {
     scene.remove(a.mesh);
@@ -158,19 +157,17 @@ function setDefaultDates() {
   document.getElementById("endDate").value = formatDate(end);
 }
 
-// --- Initial load ---
+// Initial load
 window.addEventListener("DOMContentLoaded", () => {
   setDefaultDates();
 
-  // attach listener to whichever id you actually have in HTML
   const applyBtn = document.getElementById("applyDates");
   if (applyBtn) applyBtn.addEventListener("click", fetchAsteroids);
 
-  // initial load
   fetchAsteroids();
 });
 
-// --- Fetch asteroid data from API ---
+// Fetch asteroid data from API
 async function fetchAsteroids() {
   const startDate = document.getElementById("startDate").value;
   const endDate = document.getElementById("endDate").value;
@@ -189,7 +186,7 @@ async function fetchAsteroids() {
     // Only fetch if date actually changed
     if (startDate === lastStartDate && endDate === lastEndDate) {
       applyFilters();
-      return; // finally will run and hide loader / re-enable button
+      return;
     }
 
     lastStartDate = startDate;
@@ -210,7 +207,6 @@ async function fetchAsteroids() {
 
     allAsteroids = fillMissingDiameters(asteroidArray);
 
-    // clearAsteroids is synchronous in your code — keep it, but await in case you change it
     clearAsteroids();
 
     // Wait for all models to load before continuing
@@ -220,14 +216,13 @@ async function fetchAsteroids() {
   } catch (err) {
     console.error("❌ Error fetching asteroid data:", err);
   } finally {
-    // always clean up UI state
     hideLoader();
     isLoading = false;
     if (applyBtn) applyBtn.disabled = false;
   }
 }
 
-// --- Apply live filters (size, speed, distance) ---
+// Apply live filters (size, speed, distance)
 function applyFilters() {
   const minDiameter = parseFloat(document.getElementById("minDiameter").value) || 0;
   const maxDiameter = parseFloat(document.getElementById("maxDiameter").value) || Infinity;
@@ -254,7 +249,6 @@ function applyFilters() {
   });
 }
 
-// === LOADER CONTROL ===
 let isLoading = false;
 
 function showLoader() {
@@ -262,7 +256,7 @@ function showLoader() {
   if (!loader) return;
   loader.style.display = "flex";
   loader.classList.remove("hidden");
-  loader.style.pointerEvents = "all"; // block clicks
+  loader.style.pointerEvents = "all"; // block clicks in scene if loader is active
 }
 
 let instructionShown = false;
@@ -276,7 +270,6 @@ function hideLoader() {
   setTimeout(() => {
     loader.style.display = "none";
 
-    // === SHOW INSTRUCTION MODAL (only once per full load) ===
     if (!instructionShown) {
       instructionShown = true;
 
@@ -339,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
   showPage(0); // initialize first page
 });
 
-// --- Create asteroid meshes ---
+// Create asteroid meshes
 function createAsteroids(asteroidData, storeMeshes = false) {
   const earthRadius = 1;
   const auToLd = 389.17;
@@ -347,7 +340,7 @@ function createAsteroids(asteroidData, storeMeshes = false) {
   const loadPromises = asteroidData.map(data => {
     return new Promise(resolve => {
       const distAU = parseFloat(data.dist);
-      if (isNaN(distAU) || distAU <= 0) return resolve(); // skip invalid entry
+      if (isNaN(distAU) || distAU <= 0) return resolve();
 
       const distLD = distAU * auToLd;
       const diameterM = parseFloat(data.diameter);
@@ -407,12 +400,11 @@ function createAsteroids(asteroidData, storeMeshes = false) {
   return Promise.all(loadPromises);
 }
 
-// --- Event listeners ---
 document.getElementById("applyDates").addEventListener("click", () => {
-  fetchAsteroids(); // Fetch only when Apply button is clicked
+  fetchAsteroids();
 });
 
-// Live filter updates for everything else
+// Live filter updates
 document.querySelectorAll("#filters input").forEach(input => {
   const id = input.id;
   if (id !== "startDate" && id !== "endDate") {
@@ -420,17 +412,16 @@ document.querySelectorAll("#filters input").forEach(input => {
   }
 });
 
-// --- Popup ---
+// ASteroid Popup
 const popup = document.getElementById("asteroid-popup");
 let selectedAsteroid = null;
-const originalColors = new Map(); // Store original colors per mesh
+const originalColors = new Map();
 
 function highlightAsteroid(asteroid) {
   if (!asteroid) return;
 
   asteroid.mesh.traverse(child => {
     if (child.isMesh && child.material && child.material.color) {
-      // Store original color if not already stored
       if (!originalColors.has(child)) {
         originalColors.set(child, child.material.color.clone());
       }
@@ -678,11 +669,8 @@ document.getElementById("resetFilters").addEventListener("click", () => {
   applyFilters();
 });
 
-
-// --- Animate ---
+// Animate Moon Speed
 const moonOrbitSpeed = 0.2;
-
-// Precompute a rotation matrix for the inclination
 const orbitInclinationMatrix = new THREE.Matrix4().makeRotationX(inclination);
 
 function animate() {
@@ -694,24 +682,23 @@ function animate() {
   cloudMesh.rotation.y += 0.0012;
   glowMesh.rotation.y += 0.001;
 
-    // Moon orbit along the inclined path
+  // Moon orbit along the angles path
   const time = Date.now() * 0.0001;
   const angle = time * moonOrbitSpeed;
 
-  // Start with XZ-plane circle
   const pos = new THREE.Vector3(
     Math.cos(angle) * moonOrbitRadius,
     0,
     Math.sin(angle) * moonOrbitRadius
   );
 
-  // Apply inclination rotation
+  // Apply angle rotation
   pos.applyMatrix4(orbitInclinationMatrix);
 
   // Set Moon position
   moon.position.copy(pos);
 
-  // Optional: tidal locking (Moon always shows same face)
+  // Tidal locking (making the moons face always face the same side to earth)
   moon.lookAt(earthMesh.position);
 
   // Asteroid popup positioning
@@ -736,6 +723,7 @@ function handleWindowResize() {
 }
 window.addEventListener("resize", handleWindowResize, false);
 
+// Link to dashboard
 document.getElementById("backToDashboard").addEventListener("click", () => {
     window.location.href = "index.html"; 
   });
